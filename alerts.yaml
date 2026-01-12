@@ -1,0 +1,18 @@
+# This is a Prometheus **alerting rule group** manifest.
+# It defines **alerts** based on Prometheus metrics using PromQL expressions.
+# When a condition (expr) evaluates to true for the specified duration (for),
+# Prometheus triggers the alert and sends it to Alertmanager.
+# This is NOT a Kubernetes CRD; it's native Prometheus alerting configuration.
+
+- name: node-alerts       # Name of the alert group
+  rules:
+  - alert: NodeHighCPU    # Name of the alert
+    expr: node_cpu_seconds_total{mode="idle"} < 20
+      # PromQL expression: triggers when node idle CPU is below 20 seconds
+      # i.e., CPU is heavily used (>80%)
+    for: 1m               # Condition must hold for 1 minute before firing
+    labels:
+      severity: warning    # Custom label to indicate severity
+    annotations:
+      summary: "Node CPU usage is high"  # Human-readable description for Alertmanager notifications
+
